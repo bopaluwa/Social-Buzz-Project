@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?><sqlb_project><db path="C:/Users/blessing.opaluwa/Desktop/PROJECT 8 - ACCENTURE/SocialBuzz.db" readonly="0" foreign_keys="1" case_sensitive_like="0" temp_store="0" wal_autocheckpoint="1000" synchronous="2"/><attached/><window><main_tabs open="structure pragmas browser query" current="3"/></window><tab_structure><column_width id="0" width="300"/><column_width id="1" width="0"/><column_width id="2" width="100"/><column_width id="3" width="644"/><column_width id="4" width="0"/><expanded_item id="0" parent="1"/><expanded_item id="1" parent="1"/><expanded_item id="2" parent="1"/><expanded_item id="3" parent="1"/></tab_structure><tab_browse><current_table name="4,7:mainContent"/><default_encoding codec=""/><browse_table_settings><table schema="main" name="Content" show_row_id="0" encoding="" plot_x_axis="" unlock_view_pk="_rowid_"><sort/><column_widths><column index="1" value="43"/><column index="2" value="251"/><column index="3" value="251"/><column index="4" value="40"/><column index="5" value="124"/><column index="6" value="300"/></column_widths><filter_values/><conditional_formats/><row_id_formats/><display_formats/><hidden_columns/><plot_y_axes/><global_filter/></table></browse_table_settings></tab_browse><tab_sql><sql name="Data Cleaning and Extraction">--To check each dataset
+
+SELECT * 
+FROM Content;
+
+SELECT * 
+FROM Reactions;
+
+SELECT * 
+FROM ReactionTypes;
+
+---------------------------------------------------------------------------------------------------------------------
+--Data cleaning for the content table
+SELECT * 
+FROM Content;
+
+ALTER TABLE Content
+DROP COLUMN URL;
+
+ALTER TABLE Content
+DROP COLUMN UserID;
+
+SELECT COUNT(ContentID),COUNT(ContentType),COUNT(Category)
+FROM Content;
+
+SELECT DISTINCT Type
+FROM Content;
+
+SELECT DISTINCT Category
+FROM Content;
+
+SELECT DISTINCT REPLACE (Category,'&quot;&quot;&quot;','') AS Categories
+FROM Content;
+
+ALTER TABLE Content
+RENAME COLUMN field1 to SNo;
+
+ALTER TABLE Content
+RENAME COLUMN Type to ContentType;
+
+----------------------------------------------------------------------------------------------------------------------
+--Data cleaning for the reaction table
+ALTER TABLE Reactions
+DROP COLUMN UserID;
+
+SELECT COUNT(ContentID),COUNT(ReactionType),COUNT(datetime)
+FROM Reactions; 
+
+DELETE FROM Reactions
+WHERE Type IS NULL;
+
+SELECT COUNT(ContentID),COUNT(ReactionType),COUNT(datetime)
+FROM Reactions; 
+
+ALTER TABLE Reactions
+RENAME COLUMN field1 to SNo;
+
+ALTER TABLE Reactions
+RENAME COLUMN Type to ReactionType;
+
+SELECT SNo,ContentID,ReactionType,datetime,CAST(datetime AS DATE) as Year
+FROM Reactions;
+
+---------------------------------------------------------------------------------------------------------------------
+--Data cleaning for the reactiontype table
+
+SELECT COUNT(ReactionType),COUNT(Sentiment),COUNT(Score)
+FROM ReactionTypes; 
+
+ALTER TABLE ReactionTypes
+RENAME COLUMN field1 to SNo;
+
+ALTER TABLE ReactionTypes
+RENAME COLUMN Type to ReactionType;
+
+------------------------
+--Joining all tables
+
+SELECT r.SNo,r.ContentID,r.ReactionType,r.datetime,CAST(datetime AS DATE) as Year,c.ContentType,REPLACE (Category,'&quot;&quot;&quot;','') AS Categories,rt.Sentiment,rt.Score
+FROM Reactions r
+LEFT JOIN Content c on r.ContentID=c.ContentID
+LEFT JOIN ReactionTypes rt on r.ReactionType=rt.ReactionType;</sql><current_tab id="0"/></tab_sql></sqlb_project>
